@@ -222,39 +222,41 @@ def assembler_instruction(mnemonic, args, current_line):
 def main(input_file, output_file):
     lines_to_process = []
     
-    # --- PASSE 1 : REPÉRAGE DES LABELS ---
+    # --- PASSE 1 : REPÉRAGE LABELS ET NETTOYAGE ---
+    # --- PASSE 1 : REPÉRAGE LABELS ET NETTOYAGE ---
     try:
         with open(input_file, 'r') as f_in:
             instruction_count = 0
             for line in f_in:
                 clean_line = line.split('@')[0].strip()
+                if not clean_line: continue
                 
-                # On ignore lignes vides
-                if not clean_line:
-                    continue
-
-                # LA GESTION DES LABELS (avec ou sans point, ex: "run:" ou ".LBB0_1:")
-                if clean_line.endswith(':'):
-                    label_name = clean_line[:-1].lower() # stocke en minuscule 
-                    LABELS[label_name] = instruction_count
-                    continue
-                
-                # LA GESTION DES DIRECTIVES (tout ce qui commence par . et n'est pas un label)
-                if clean_line.startswith('.'):
-                    continue
-                
-                # --- petits FILTRES C ---
+                # Découpage par espace pour analyser les premiers mots
                 parts = clean_line.replace(',', ' ').split()
+                
+                # boucle qui mange les labels (ex: TRUC1: TRUC2: movs...)
+                # Tant que le premier mot finit par ':', c'est un label
+                while len(parts) > 0 and parts[0].endswith(':'):
+                    label_name = parts[0][:-1].lower() # On enlève le ':'
+                    LABELS[label_name] = instruction_count
+                    parts.pop(0) # On retire le label de la ligne et on continue
+                
+                # S'il ne reste rien sur la ligne, on passe à la suivante
+                if not parts: continue
+                
+                # S'il reste quelque chose, on vérifie si c'est une directive
+                #Les labels ".TRUC4:" sont déjà partis dans la boucle while
+                # Donc si ça commence ici par '.' ici, c'est une vraie directive à ignorer
+                if parts[0].startswith('.'): continue
+                
+                # --- FILTRES C ---
                 mnemonic = parts[0].lower()
+                if mnemonic in ['push', 'pop', 'bx', 'blx', 'bl']: continue
+                if mnemonic == 'add' and 'r7' in parts and 'sp' in parts: continue
                 
-                if mnemonic in ['push', 'pop', 'bx', 'blx', 'bl']:
-                    continue
-                
-                if mnemonic == 'add' and 'r7' in parts and 'sp' in parts:
-                    continue
-                
-                # Si on arrive ici, c'est bien une vraie instruction yay
-                lines_to_process.append(clean_line)
+                # On reconstruit la ligne propre sans les labels pour la passe 2
+                clean_instruction = " ".join(parts)
+                lines_to_process.append(clean_instruction)
                 instruction_count += 1
 
         # --- PASSE 2 : GÉNÉRATION DU CODE ---
