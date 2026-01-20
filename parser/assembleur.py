@@ -223,7 +223,6 @@ def main(input_file, output_file):
     lines_to_process = []
     
     # --- PASSE 1 : REPÉRAGE LABELS ET NETTOYAGE ---
-    # --- PASSE 1 : REPÉRAGE LABELS ET NETTOYAGE ---
     try:
         with open(input_file, 'r') as f_in:
             instruction_count = 0
