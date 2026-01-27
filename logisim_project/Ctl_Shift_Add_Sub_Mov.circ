@@ -180,17 +180,17 @@ end TCL_Generic;
       <text dominant-baseline="central" fill="#ffffff" font-family="Dialog" font-size="14" font-weight="bold" text-anchor="middle" x="159" y="224">Shift_Add_Sub_Mov</text>
       <text dominant-baseline="central" font-family="SansSerif" font-size="12" text-anchor="middle" x="197" y="202">Flags_Update_Mask</text>
       <text dominant-baseline="central" font-family="SansSerif" font-size="12" text-anchor="middle" x="236" y="44">Carry</text>
-      <circ-anchor facing="east" x="270" y="100"/>
+      <circ-anchor facing="east" x="270" y="80"/>
       <circ-port dir="in" pin="190,150" x="50" y="40"/>
       <circ-port dir="in" pin="600,50" x="50" y="60"/>
-      <circ-port dir="out" pin="1690,170" x="270" y="50"/>
+      <circ-port dir="out" pin="1690,170" x="270" y="40"/>
       <circ-port dir="out" pin="1690,270" x="270" y="60"/>
-      <circ-port dir="out" pin="1690,400" x="270" y="70"/>
-      <circ-port dir="out" pin="1690,530" x="270" y="80"/>
-      <circ-port dir="out" pin="1690,670" x="270" y="90"/>
-      <circ-port dir="out" pin="1690,70" x="270" y="40"/>
-      <circ-port dir="out" pin="1690,830" x="270" y="100"/>
-      <circ-port dir="out" pin="1690,980" x="270" y="110"/>
+      <circ-port dir="out" pin="1690,400" x="270" y="140"/>
+      <circ-port dir="out" pin="1690,530" x="270" y="160"/>
+      <circ-port dir="out" pin="1690,670" x="270" y="180"/>
+      <circ-port dir="out" pin="1690,70" x="270" y="200"/>
+      <circ-port dir="out" pin="1690,830" x="270" y="80"/>
+      <circ-port dir="out" pin="1690,980" x="270" y="100"/>
       <circ-port dir="out" pin="1710,1240" x="270" y="120"/>
     </appear>
     <comp lib="0" loc="(1000,790)" name="Tunnel">
@@ -1091,7 +1091,7 @@ end TCL_Generic;
     <comp lib="2" loc="(1690,1240)" name="Multiplexer">
       <a name="width" val="4"/>
     </comp>
-    <comp lib="8" loc="(1226,1105)" name="Text">
+    <comp lib="8" loc="(1225,1105)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="CMP"/>
     </comp>
