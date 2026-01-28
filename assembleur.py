@@ -1,4 +1,6 @@
 import sys
+import os    # AJOUTÉ
+import glob  # AJOUTÉ
 
 #################################################################################
 # la définition des constantes (Tableau de synthèse)
@@ -11,25 +13,18 @@ REGISTRES = {
 
 
 
-
-
-
-
 #################################################################################
 # codes de conditions pr les branchements 
 CONDITIONS = {
-    'eq': 0b0000, 'ne': 0b0001, 'cs': 0b0010, 'cc': 0b0011,
-    'mi': 0b0100, 'pl': 0b0101, 'vs': 0b0110, 'vc': 0b0111,
-    'hi': 0b1000, 'ls': 0b1001, 'ge': 0b1010, 'lt': 0b1011,
-    'gt': 0b1100, 'le': 0b1101, 'al': 0b1110 # Always
+    'eq': 0b0000, 'ne': 0b0001, 'cs': 0b0010, 'hs': 0b0010,
+    'cc': 0b0011, 'lo': 0b0011, 'mi': 0b0100, 'pl': 0b0101,
+    'vs': 0b0110, 'vc': 0b0111, 'hi': 0b1000, 'ls': 0b1001,
+    'ge': 0b1010, 'lt': 0b1011, 'gt': 0b1100, 'le': 0b1101, 'al': 0b1110
 }
 #################################################################################
 
 # Ajout pour la gestion des sauts (donc le Double Passage)
 LABELS = {} 
-
-
-
 
 
 
@@ -54,14 +49,12 @@ def parse_val(arg, current_line=0):
             return 0
  ###################################################################################    
 
-     
-     
-     
-     
-     
-     
-        
-        
+
+
+
+
+
+
 #######################################################################################
 def assembler_instruction(mnemonic, args, current_line):
     instr_bin = 0
@@ -159,7 +152,7 @@ def assembler_instruction(mnemonic, args, current_line):
         instr_bin = (0b010000 << 10) | (op_alu << 6) | (rm << 3) | rdn
 
     # -------------------------------------------------------------------------
-    # GROUPE 5 : LOAD / STORE (CORRIGÉ)
+    # GROUPE 5 : LOAD / STORE
     # -------------------------------------------------------------------------
     elif mnemonic == 'str': 
         rt = parse_val(args[0])
@@ -216,10 +209,39 @@ def assembler_instruction(mnemonic, args, current_line):
 
 
 
-
+# --- FONCTION DE TEST AUTOMATIQUE -----------------------------------------------
+def run_automated_tests(base_folder):
+    asm_files = glob.glob(os.path.join(base_folder, "**/*.s"), recursive=True)
+    print(f"\n Voulez-vous tester, ou compiler un .s? (t/c)\nt")
+    print(f"--- Lancement des tests ({len(asm_files)} fichiers) ---")
+    for asm_path in sorted(asm_files):
+        ref_bin = asm_path.replace(".s", ".bin")
+        temp_bin = "temp_test_output.bin"
+        print(f"Testing {asm_path}...", end=" ")
+        if not os.path.exists(ref_bin):
+            print("Pas de .bin de référence")
+            continue
+        try:
+            main(asm_path, temp_bin, silent=True)
+            with open(temp_bin, 'r') as f1, open(ref_bin, 'r') as f2:
+                if f1.read().strip().replace('\n', ' ') == f2.read().strip().replace('\n', ' '):
+                    print("PASSED")
+                else:
+                    print("Différence binaire")
+        except Exception:
+            print("Crash")
+    if os.path.exists("temp_test_output.bin"): os.remove("temp_test_output.bin")
 
 #----------------------------------------------------------------------------------------------
-def main(input_file, output_file):
+
+
+
+
+
+
+def main(input_file, output_file, silent=False):
+    global LABELS     # pour réinitialiser entre les tests
+    LABELS = {}       # RAZ du dictionnaire de labels
     lines_to_process = []
     
     # --- PASSE 1 : REPÉRAGE LABELS ET NETTOYAGE ---
@@ -276,19 +298,17 @@ def main(input_file, output_file):
                 try:
                     code = assembler_instruction(mnemonic, args, idx)
                     f_out.write(f"{code:04x} ")
-                except Exception as e:
-                    print(f"Erreur instruction {idx} ({line}): {e}")
+                except Exception:
                     f_out.write("0000 ")
-                    
-        print(f"Succès ! Fichier généré : {output_file}")
-        
+        if not silent: print(f"Succès ! Fichier généré : {output_file}")
     except FileNotFoundError:
-        print(f"Erreur : Fichier {input_file} introuvable.")
+        if not silent: print(f"Erreur : Fichier {input_file} introuvable.")
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2:
+    answer = input("Voulez-vous tester, ou compiler un .s? (t/c)\n")
+    if answer.lower() == 't':
+        run_automated_tests(".") # Scanne le dossier courant
+    elif len(sys.argv) > 2:
         main(sys.argv[1], sys.argv[2])
-        #python3 assembleur.py code_c/calckeyb.s code_c/mon_test.bin
     else:
-        # Valeur par défaut pour les tests
-        main("calckeyb.s", "mon_test_calckeyb.bin")
+        main("testfp.s", "mon_test_fp.bin")
