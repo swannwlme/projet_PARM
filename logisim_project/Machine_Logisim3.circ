@@ -14,8 +14,11 @@
     </tool>
     <tool name="Probe">
       <a name="appearance" val="classic"/>
-      <a name="facing" val="west"/>
+      <a name="facing" val="north"/>
       <a name="radix" val="10unsigned"/>
+    </tool>
+    <tool name="Tunnel">
+      <a name="facing" val="south"/>
     </tool>
     <tool name="Pull Resistor">
       <a name="facing" val="north"/>
@@ -45,7 +48,7 @@
       <a name="size" val="30"/>
     </tool>
     <tool name="OR Gate">
-      <a name="size" val="30"/>
+      <a name="inputs" val="4"/>
     </tool>
     <tool name="XOR Gate">
       <a name="inputs" val="3"/>
@@ -53,6 +56,9 @@
     </tool>
   </lib>
   <lib desc="#Plexers" name="2">
+    <tool name="Multiplexer">
+      <a name="select" val="4"/>
+    </tool>
     <tool name="Decoder">
       <a name="select" val="3"/>
     </tool>
@@ -85,7 +91,11 @@
       <a name="width" val="32"/>
     </tool>
   </lib>
-  <lib desc="#Memory" name="4"/>
+  <lib desc="#Memory" name="4">
+    <tool name="Register">
+      <a name="width" val="32"/>
+    </tool>
+  </lib>
   <lib desc="#I/O" name="5">
     <tool name="DipSwitch">
       <a name="number" val="32"/>
@@ -134,7 +144,25 @@ end type_architecture;
 </a>
     </tool>
   </lib>
-  <lib desc="#TCL" name="7"/>
+  <lib desc="#TCL" name="7">
+    <tool name="TclGeneric">
+      <a name="content">library ieee;
+use ieee.std_logic_1164.all;
+
+entity TCL_Generic is
+  port(
+    --Insert input ports below
+    horloge_i  : in  std_logic;                    -- input bit example
+    val_i      : in  std_logic_vector(3 downto 0); -- input vector example
+
+	  --Insert output ports below
+    max_o      : out std_logic;                    -- output bit example
+    cpt_o      : out std_logic_Vector(3 downto 0)  -- output vector example
+  );
+end TCL_Generic;
+</a>
+    </tool>
+  </lib>
   <lib desc="#Base" name="8">
     <tool name="Text Tool">
       <a name="font" val="SansSerif plain 20"/>
@@ -143,13 +171,13 @@ end type_architecture;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#TTL" name="11"/>
-  <lib desc="file#ALU.circ" name="12">
+  <lib desc="file#Controller.circ" name="12"/>
+  <lib desc="file#BancDeRegistres.circ" name="13"/>
+  <lib desc="file#ALU.circ" name="14">
     <tool name="ALU">
       <a name="facing" val="east"/>
     </tool>
   </lib>
-  <lib desc="file#Controller.circ" name="13"/>
-  <lib desc="file#BancDeRegistres.circ" name="14"/>
   <main name="Facade"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -1580,7 +1608,8 @@ end type_architecture;
       <a name="addrWidth" val="16"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 16 16
-0
+2000 2101 2201 4252 2301 425b 40cb 2401
+42cb 42ca 428c 4288 4281
 </a>
       <a name="dataWidth" val="16"/>
       <a name="label" val="ROMa"/>
@@ -2418,14 +2447,14 @@ end type_architecture;
       <a name="facing" val="east"/>
       <a name="label" val="Carry"/>
     </comp>
-    <comp lib="12" loc="(1060,900)" name="ALU">
-      <a name="label" val="ALU_1"/>
-    </comp>
-    <comp lib="13" loc="(590,460)" name="Controller">
+    <comp lib="12" loc="(590,460)" name="Controller">
       <a name="label" val="Controller_1"/>
     </comp>
-    <comp lib="14" loc="(990,140)" name="BancRegistre">
+    <comp lib="13" loc="(990,140)" name="BancRegistre">
       <a name="label" val="Regs_1"/>
+    </comp>
+    <comp lib="14" loc="(1060,900)" name="ALU">
+      <a name="label" val="ALU_1"/>
     </comp>
     <comp lib="2" loc="(600,140)" name="Multiplexer">
       <a name="width" val="32"/>
@@ -2444,10 +2473,11 @@ end type_architecture;
     <wire from="(1000,180)" to="(1060,180)"/>
     <wire from="(1000,910)" to="(1000,920)"/>
     <wire from="(1000,910)" to="(1040,910)"/>
-    <wire from="(1030,860)" to="(1030,880)"/>
     <wire from="(1060,920)" to="(1060,950)"/>
     <wire from="(1090,840)" to="(1090,880)"/>
+    <wire from="(1090,890)" to="(1110,890)"/>
     <wire from="(1090,900)" to="(1120,900)"/>
+    <wire from="(1110,860)" to="(1110,890)"/>
     <wire from="(1170,430)" to="(1240,430)"/>
     <wire from="(1190,280)" to="(1240,280)"/>
     <wire from="(1190,470)" to="(1240,470)"/>
@@ -2497,8 +2527,9 @@ end type_architecture;
     <wire from="(760,880)" to="(960,880)"/>
     <wire from="(770,220)" to="(770,240)"/>
     <wire from="(790,110)" to="(790,130)"/>
+    <wire from="(790,140)" to="(810,140)"/>
     <wire from="(800,220)" to="(800,270)"/>
-    <wire from="(810,90)" to="(810,130)"/>
+    <wire from="(810,90)" to="(810,140)"/>
     <wire from="(830,70)" to="(830,130)"/>
     <wire from="(850,50)" to="(850,130)"/>
     <wire from="(870,110)" to="(870,130)"/>
@@ -2509,7 +2540,7 @@ end type_architecture;
     <wire from="(920,750)" to="(920,780)"/>
     <wire from="(930,50)" to="(930,130)"/>
     <wire from="(930,810)" to="(930,860)"/>
-    <wire from="(930,860)" to="(1030,860)"/>
+    <wire from="(930,860)" to="(1110,860)"/>
     <wire from="(930,900)" to="(1030,900)"/>
     <wire from="(940,750)" to="(940,780)"/>
     <wire from="(940,750)" to="(950,750)"/>
