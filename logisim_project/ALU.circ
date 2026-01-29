@@ -857,9 +857,6 @@
     <comp lib="1" loc="(740,1080)" name="NOT Gate">
       <a name="width" val="32"/>
     </comp>
-    <comp lib="1" loc="(760,430)" name="NOT Gate">
-      <a name="facing" val="south"/>
-    </comp>
     <comp lib="1" loc="(770,100)" name="AND Gate">
       <a name="width" val="32"/>
     </comp>
@@ -1408,6 +1405,7 @@
     <wire from="(720,870)" to="(730,870)"/>
     <wire from="(740,210)" to="(740,220)"/>
     <wire from="(740,570)" to="(740,590)"/>
+    <wire from="(760,400)" to="(760,430)"/>
     <wire from="(760,550)" to="(770,550)"/>
     <wire from="(770,100)" to="(800,100)"/>
     <wire from="(770,860)" to="(780,860)"/>
