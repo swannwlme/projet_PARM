@@ -1,9 +1,9 @@
 import sys
-import os    # AJOUTÉ
-import glob  # AJOUTÉ
+import os    
+import glob  
 
 #################################################################################
-# la définition des constantes (Tableau de synthèse)
+# la définition des constantes (depuis notre Tableau de synthèse)
 REGISTRES = {
     'r0': 0, 'r1': 1, 'r2': 2, 'r3': 3,
     'r4': 4, 'r5': 5, 'r6': 6, 'r7': 7,
@@ -38,7 +38,7 @@ def parse_val(arg, current_line=0):
     elif arg.startswith('#'):
         return int(arg.replace('#', ''), 0)
     elif arg in LABELS:
-        # CALCUL DU SAUT (Offset)
+        # CALCUL DU SAUT (Offset) pour branchements
         target_line = LABELS[arg]
         offset = target_line - current_line - 3 
         return offset
@@ -162,7 +162,7 @@ def assembler_instruction(mnemonic, args, current_line):
             imm_str = args[-1].replace(']', '') 
             imm = parse_val(imm_str)
         else:
-            # Pas de #, donc c'est [sp] tout court -> décalage 0
+            # Pas de #, donc c'est [sp] tout court , donc décalage 0
             imm = 0
             
         # Division par 4 si c'est relatif à SP
@@ -179,7 +179,7 @@ def assembler_instruction(mnemonic, args, current_line):
             imm_str = args[-1].replace(']', '')
             imm = parse_val(imm_str)
         else:
-            # Pas de # -> décalage 0
+            # Pas de #  donc décalage 0
             imm = 0
             
         # Division par 4 si c'est relatif à SP
@@ -241,7 +241,7 @@ def run_automated_tests(base_folder):
 
 def main(input_file, output_file, silent=False):
     global LABELS     # pour réinitialiser entre les tests
-    LABELS = {}       # RAZ du dictionnaire de labels
+    LABELS = {}       # remise à 0 du dictionnaire de labels
     lines_to_process = []
     
     # --- PASSE 1 : REPÉRAGE LABELS ET NETTOYAGE ---
@@ -262,10 +262,10 @@ def main(input_file, output_file, silent=False):
                     LABELS[label_name] = instruction_count
                     parts.pop(0) # On retire le label de la ligne et on continue
                 
-                # S'il ne reste rien sur la ligne, on passe à la suivante
+                # il ne reste rien sur la ligne, on passe à la suivante
                 if not parts: continue
                 
-                # S'il reste quelque chose, on vérifie si c'est une directive
+                # il reste quelque chose, on vérifie si c'est une directive
                 #Les labels ".TRUC4:" sont déjà partis dans la boucle while
                 # Donc si ça commence ici par '.' ici, c'est une vraie directive à ignorer
                 if parts[0].startswith('.'): continue
@@ -275,7 +275,7 @@ def main(input_file, output_file, silent=False):
                 if mnemonic in ['push', 'pop', 'bx', 'blx', 'bl']: continue
                 if mnemonic == 'add' and 'r7' in parts and 'sp' in parts: continue
                 
-                # On reconstruit la ligne propre sans les labels pour la passe 2
+                # On reconstruit la ligne propre sans les labels pour la passage 2
                 clean_instruction = " ".join(parts)
                 lines_to_process.append(clean_instruction)
                 instruction_count += 1
@@ -290,7 +290,7 @@ def main(input_file, output_file, silent=False):
                 
                 mnemonic = parts[0].lower()
                 
-                # Clang met 'mov' au lieu de 'movs'
+                # Clang met 'mov' au lieu de 'movs'.
                 if mnemonic == 'mov': mnemonic = 'movs'
                 
                 args = parts[1:]
