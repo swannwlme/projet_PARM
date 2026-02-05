@@ -1,9 +1,10 @@
 # Projet PARM SI3 
 GROUPE PARMi-nous
-Membres
-Luc bernacki
-Marie waeles--devaux
-Swann williame-neuranter
+Membres :
+
+Luc bernacki,
+Marie waeles--devaux,
+Swann williame-neuranter,
 Raphaël goure
 
 Voir la documentation en PDF dans le dossier `doc`.
